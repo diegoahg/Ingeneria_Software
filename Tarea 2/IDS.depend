@@ -1,0 +1,19 @@
+# depslib dependency file v1.0
+1395929129 source:c:\users\diegol\desktop\proyecto\ids\main.cpp
+	<iostream>
+	<fstream>
+	<vector>
+	<string>
+	<time.h>
+	<string.h>
+	<cstdlib>
+
+1396123299 source:d:\documentos\utem\ing software\proyecto\ids\main.cpp
+	<iostream>
+	<fstream>
+	<vector>
+	<string>
+	<time.h>
+	<string.h>
+	<cstdlib>
+
