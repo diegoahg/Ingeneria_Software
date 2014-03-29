@@ -30,12 +30,12 @@ vector<string> Split(string palabra, string separador)
     size_t comienzo=0;
     for(size_t i=0;i<=palabra.size();i++)
     {
-    j++;
-    if(palabra[i] ==separador[0])
-    {
-        found.push_back(j);
-        j=0;
-    }
+        j++;
+        if(palabra[i] ==separador[0])
+        {
+            found.push_back(j);
+            j=0;
+        }
     }
     found.push_back(j);
     while (!found.empty())
@@ -51,10 +51,9 @@ vector<string> Split(string palabra, string separador)
         palabras.push_back(palabra.substr(comienzo,termino-1));
         comienzo = termino+comienzo;
     }
-
     return palabras;
 }
-
+/* Funcion para pasar todas las letras a minuscula*/
 string Estandarizar (string palabra)
 {
     int i , largo=palabra.size();
@@ -64,22 +63,21 @@ string Estandarizar (string palabra)
     }
     return palabra;
 }
-
+/*Eliminar Comillas de una palabra*/
 string Saca_Comillas(string palabra){
     int desde = 1;
     int hasta = (palabra.size())-2;
     palabra = palabra.substr(desde,hasta);
-
     return palabra;
 }
-
-void Total_Ingresos(void)
+/* Saca */
+void Total_Ingresos(string archivo)
 {
      long TotalIngre =0,Ingreso;
      string delimitador=";";
      vector<string> datos;
      string precio, str;
-     ifstream leer_fich("ventas.csv");
+     ifstream leer_fich(archivo.c_str());
      if ( !leer_fich){
         cout << "No se ha podido abrir el fichero";
       }
@@ -92,13 +90,12 @@ void Total_Ingresos(void)
           Ingreso = atoi(precio.c_str());
           /* suma de todos los ingresos*/
           TotalIngre=TotalIngre+Ingreso;
-
      }
      cout<<flush;/* limpiar el buffer*/
      leer_fich.close(); /*cerrar el fichero*/
+     cout<<"Las ventas totales de las empresas son: " ;
      cout<<TotalIngre;
 }
-
 bool Existe(string palabra)
 {
     int i;
@@ -113,17 +110,15 @@ bool Existe(string palabra)
         {
            return true;
         }
-
-
     }
     return false;
 }
-void Ingr_Mens(string palabra)
+void Ingr_Mens(string palabra, string archivo)
 {
-    long IngrMen[12];
-    long i, Ingreso, mes;
-    vector<string> fecha,datos;
-    string precio, str, tienda,fechaCompleta,delimitador=";",delimitador2="-";
+     long IngrMen[12];
+     long i, Ingreso, mes;
+     vector<string> fecha,datos;
+     string precio, str, tienda,fechaCompleta,delimitador=";",delimitador2="-";
      vector<string> NombreMes;
      NombreMes.push_back("Enero");
      NombreMes.push_back("Febrero");
@@ -137,15 +132,14 @@ void Ingr_Mens(string palabra)
      NombreMes.push_back("Octubre");
      NombreMes.push_back("Noviembre");
      NombreMes.push_back("Diciembre");
-    for(i=0;i<12;i++)
-    {
+     for(i=0;i<12;i++)
+     {
         IngrMen[i]=0;
-    }
-    string TiendaIngresada = QuitarTildes(Estandarizar(palabra));
-//cout<<TiendaIngresada;
-    if(Existe(TiendaIngresada)==true)
-    {
-        ifstream leer_fich("ventas.csv");
+     }
+     string TiendaIngresada = QuitarTildes(Estandarizar(palabra));
+     if(Existe(TiendaIngresada)==true)
+     {
+        ifstream leer_fich(archivo.c_str());
         if ( !leer_fich)
         {
             cout << "No se ha podido abrir el fichero";
@@ -154,19 +148,23 @@ void Ingr_Mens(string palabra)
         {
             /*extraer los tres datos y limpiarlos*/
             getline(leer_fich,str);
-            datos=Split(str,delimitador);
-            tienda=Saca_Comillas(datos[0]);
-            fechaCompleta=Saca_Comillas(datos[1]);
-            precio=Saca_Comillas(datos[2]);
-            Ingreso = atoi(precio.c_str());
-            fecha = Split(fechaCompleta,delimitador2);
-            mes = atoi(fecha[1].c_str());
-            string TiendaDoc = Estandarizar(tienda);
-            if(TiendaIngresada==TiendaDoc)
+            if(str!="")
             {
-                IngrMen[mes-1]=IngrMen[mes-1]+Ingreso;
+                datos=Split(str,delimitador);
+                tienda=Saca_Comillas(datos[0]);
+                fechaCompleta=Saca_Comillas(datos[1]);
+                precio=Saca_Comillas(datos[2]);
+                Ingreso = atoi(precio.c_str());
+                fecha = Split(fechaCompleta,delimitador2);
+                mes = atoi(fecha[1].c_str());
+                string TiendaDoc = Estandarizar(tienda);
+                if(TiendaIngresada==TiendaDoc)
+                    {
+                        IngrMen[mes-1]=IngrMen[mes-1]+Ingreso;
+                    }
             }
         }
+        cout<<"Las ventas mensuales de la tienda "<<TiendaIngresada<<" son:"<<endl<<endl;
         for(i=0;i<12;i++)
         {
             cout<<NombreMes[i]<<" : "<<IngrMen[i]<<endl;
@@ -174,38 +172,25 @@ void Ingr_Mens(string palabra)
     }else
         cout<<"Tienda Ingresada no existe"<<endl;
 }
-
 int main(int argc, char *argv[])
 {
-    argc=2;
-    argv[1]="-v";
     if(argc > 1)
     {
        if (strcmp(argv[1], "-s") == 0)/*leo la segunda posicion de los argumentos recibidos*/
         {
-            if(strcmp(argv[2], "ventas.csv")==0) /*valido el argumento con el nombre del archivo*//*quizas este de mas esto*/
-            {
                 if (argc == 3)/*corroboro q se haya enviado cantidad correcta de argumennto*/
                 {
-
-                    cout<<"La suma total de todas las tiendas es: "; //funcion suma total*/
-                    Total_Ingresos();
+                    cout<<"La suma total de todas las tiendas es: "<<endl; //funcion suma total*/
+                      Total_Ingresos(argv[2]);
                 }else
                     cout<<"Falto la ruta del archivo"<<endl;
-            }else
-                cout<<"Mal ingresada la ruta del archivo"<<endl;
         }else
             if (strcmp(argv[1], "-a") == 0)
             {
                 if (argc == 4)
                 {
-                    if(strcmp(argv[3], "ventas.csv")==0)
-                    {
-                      /*Suma mensual de la Tienda (argv[3])*/
-                      string palabra = argv[2];
-                      Ingr_Mens(palabra);
-                    }else
-                        cout<<"Mal ingresada la ruta del archivo"<<endl;
+                    /*Suma mensual de la Tienda (argv[3])*/
+                      Ingr_Mens(argv[2],argv[3]);
                 }else
                     cout<<"Mal ingresada la cantidad de parametros"<<endl;
             }else
@@ -222,7 +207,6 @@ int main(int argc, char *argv[])
                         cout<<"Mal ingresada la cantidad de parametros"<<endl;
                 }else
                     cout << "Opcion invalida" << endl;
-
     }
     else{
         cout << "Tiene que pasarle algun parametro!" << endl;
@@ -230,4 +214,3 @@ int main(int argc, char *argv[])
     }
     return 0;
 }
-
