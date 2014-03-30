@@ -70,32 +70,38 @@ string Saca_Comillas(string palabra){
     palabra = palabra.substr(desde,hasta);
     return palabra;
 }
-/* Saca */
+/* Saca el ingreso de cada linea para sumarlo*/
 void Total_Ingresos(string archivo)
 {
-     long TotalIngre =0,Ingreso;
+     long long TotalIngre =0,Ingreso;
      string delimitador=";";
      vector<string> datos;
      string precio, str;
      ifstream leer_fich(archivo.c_str());
      if ( !leer_fich){
-        cout << "No se ha podido abrir el fichero";
+        cout << "No se ha podido abrir el fichero o fichero no existe"<<endl;
+         EXIT_FAILURE;
+         exit(0);
       }
      while(!leer_fich.eof())
      {
         /* aqui va la extraccion de ingreso y transformacion de este en int */
           getline(leer_fich,str);
+          if(str!="")
+        {
           datos=Split(str,delimitador);
           precio=Saca_Comillas(datos[2]);
           Ingreso = atoi(precio.c_str());
           /* suma de todos los ingresos*/
           TotalIngre=TotalIngre+Ingreso;
+        }
      }
      cout<<flush;/* limpiar el buffer*/
      leer_fich.close(); /*cerrar el fichero*/
-     cout<<"Las ventas totales de las empresas son: " ;
-     cout<<TotalIngre;
+     cout<<"La suma total de todas las tiendas es: ";
+     cout<<TotalIngre<<endl;
 }
+/*Valida q la tienda exista*/
 bool Existe(string palabra)
 {
     int i;
@@ -113,10 +119,13 @@ bool Existe(string palabra)
     }
     return false;
 }
+/*Rescata el ingreso de cada linea q cohincida con la tienda
+ingresada en el parametro y asi como tambien a q mes corresponde
+para hacer una suma mensual*/
 void Ingr_Mens(string palabra, string archivo)
 {
-     long IngrMen[12];
-     long i, Ingreso, mes;
+     long long IngrMen[12];
+     long long i, Ingreso, mes;
      vector<string> fecha,datos;
      string precio, str, tienda,fechaCompleta,delimitador=";",delimitador2="-";
      vector<string> NombreMes;
@@ -142,7 +151,9 @@ void Ingr_Mens(string palabra, string archivo)
         ifstream leer_fich(archivo.c_str());
         if ( !leer_fich)
         {
-            cout << "No se ha podido abrir el fichero";
+            cout << "No se ha podido abrir el fichero o fichero no existe"<<endl;
+            EXIT_FAILURE;
+            exit(0);
         }
         while(!leer_fich.eof())
         {
@@ -180,7 +191,7 @@ int main(int argc, char *argv[])
         {
                 if (argc == 3)/*corroboro q se haya enviado cantidad correcta de argumennto*/
                 {
-                    cout<<"La suma total de todas las tiendas es: "<<endl; //funcion suma total*/
+                    //funcion suma total*/
                       Total_Ingresos(argv[2]);
                 }else
                     cout<<"Falto la ruta del archivo"<<endl;
@@ -209,7 +220,7 @@ int main(int argc, char *argv[])
                     cout << "Opcion invalida" << endl;
     }
     else{
-        cout << "Tiene que pasarle algun parametro!" << endl;
+        cout << "Tiene que mandar algun parametro!" << endl;
         system("pause");
     }
     return 0;
